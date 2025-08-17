@@ -3,16 +3,20 @@ const { validationResult } = require('express-validator');
 const logger = require('../../config/logger');
 const bcrypt = require('bcryptjs');
 
+
+// console.log('User Admin Controller initialized');
 const listUsers = async (req, res) => {
     try {
-        const users = await User.find({}).sort({ createdAt: -1 });
-        res.render('admin/users/index', { users });
+        // For server-side DataTables, we just render the page without data
+        logger.info('Admin listing users');
+        res.render('admin/users/index');
     } catch (err) {
         logger.error(`Admin List Users Error: ${err.message}`);
         res.redirect('/admin/dashboard');
     }
 };
 
+// ... rest of your existing functions remain the same
 const showCreateForm = (req, res) => {
     res.render('admin/users/create', { errors: [], oldInput: {} });
 };
@@ -73,7 +77,7 @@ const updateUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).render('admin/users/edit', {
             errors: errors.array(),
-            user: userToEdit, // Pass existing user data back to the form
+            user: userToEdit,
             oldInput: req.body
         });
     }
@@ -111,4 +115,4 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { listUsers, showCreateForm, createUser, showEditForm, updateUser, deleteUser , viewUser };
+module.exports = { listUsers, showCreateForm, createUser, showEditForm, updateUser, deleteUser, viewUser };

@@ -1,3 +1,4 @@
+// Server.js
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -8,6 +9,7 @@ const connectDB = require('./config/db');
 const logger = require('./config/logger');
 const apiRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
+const { Server } = require('http');
 
 // Initialize Express App
 const app = express();
