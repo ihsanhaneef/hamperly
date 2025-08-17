@@ -1,0 +1,112 @@
+<h1 class="page-header">User Details: <%= user.name %></h1>
+
+<div class="user-details-container">
+    <div class="user-info-card">
+        <div class="user-info-row">
+            <span class="info-label">Full Name:</span>
+            <span class="info-value"><%= user.name %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="info-label">Username:</span>
+            <span class="info-value"><%= user.username %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value"><%= user.email %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="info-label">Role:</span>
+            <span class="info-value">
+                <% if (user.is_admin === 1) { %>
+                    Admin
+                <% } else { %>
+                    User
+                <% } %>
+            </span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="info-label">Account Created:</span>
+            <span class="info-value"><%= new Date(user.createdAt).toLocaleString() %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="info-label">Last Updated:</span>
+            <span class="info-value"><%= new Date(user.updatedAt).toLocaleString() %></span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="/admin/users/edit/<%= user._id %>" class="btn-edit">Edit User</a>
+        <a href="/admin/users" class="btn-back">Back to Users</a>
+    </div>
+</div>
+
+<style>
+    .user-details-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .user-info-card {
+        margin-bottom: 30px;
+    }
+    
+    .user-info-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .user-info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: bold;
+        width: 200px;
+        color: #555;
+    }
+    
+    .info-value {
+        flex: 1;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-edit, .btn-back {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .btn-edit {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background-color: #45a049;
+    }
+    
+    .btn-back {
+        background-color: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-back:hover {
+        background-color: #e0e0e0;
+    }
+</style>
