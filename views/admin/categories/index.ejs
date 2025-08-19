@@ -1,0 +1,120 @@
+<div class="page-header">
+  <h1>Categories</h1>
+  <a href="/admin/categories/create" class="primary-btn">
+    <i class="fas fa-plus"></i> Add New Category
+  </a>
+</div>
+
+<!-- Column Filters Section -->
+<div class="column-filters-section">
+  <!-- <h5>Column Filters</h5> -->
+  <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;" >
+    <!-- Name Filter -->
+    <div class="col-md-4 col-sm-6 col-12 mb-3">
+      <div class="filter-column">
+        <label for="nameFilter" style="font-weight: 600; display: block; margin-bottom: 5px">Name:</label>
+        <input type="text" id="nameFilter" placeholder="Filter by name..." class="form-control" />
+      </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="col-md-4 col-sm-6 col-12 mb-3">
+      <div class="filter-column">
+        <label for="statusFilter">Status:</label>
+        <select id="statusFilter" class="form-control">
+          <option value="">All Statuses</option>
+          <option value="1">Active</option>
+          <option value="0">Inactive</option>
+        </select>
+      </div>
+    </div>
+ </div>
+
+    <!-- Control Buttons -->
+  <div class="col-md-8 col-sm-6 col-12 mb-3 d-flex align-items-end">
+      <div class="filter-controls">
+        <button id="clearAllFilters" class="btn btn-secondary">
+          </i> Clear Filters
+        </button>
+        <button id="applyFilters" class="btn btn-primary">
+           Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+<!-- Categories Table -->
+<table id="categoriesTable" class="content-table display" style="width:100%">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <!-- <th>created at</th> -->
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data will be loaded via AJAX -->
+  </tbody>
+</table>
+
+<%- contentFor('scripts') %>
+<script>
+$(document).ready(function() {
+    var table = $('#categoriesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/admin/api/categories-datatable',
+            type: 'GET',
+            data: function(d) {
+                d.nameFilter = $('#nameFilter').val();
+                d.statusFilter = $('#statusFilter').val();
+            }
+        },
+        columns: [
+            { data: 0, name: 'name', orderable: true },
+            { data: 1, name: 'isActive', orderable: true },
+            { data: 2, name: 'actions', orderable: false, searchable: false }
+        ],
+        order: [[0, 'asc']],
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        language: {
+            processing: "Loading categories...",
+            emptyTable: "No categories found",
+            zeroRecords: "No matching categories found"
+        }
+    });
+
+    // Apply filters when button is clicked or filters change
+    $('#applyFilters, #nameFilter, #statusFilter').on('click keyup change', function() {
+        table.draw();
+    });
+
+    // Clear all filters
+    $('#clearAllFilters').on('click', function() {
+        $('#nameFilter').val('');
+        $('#statusFilter').val('');
+        table.draw();
+    });
+
+    // Toggle status functionality
+    $(document).on('click', '.toggle-status', function(e) {
+        e.preventDefault();
+        const categoryId = $(this).data('id');
+        
+        if (confirm('Are you sure you want to toggle this category status?')) {
+            $.post(`/admin/categories/toggle/${categoryId}`, function(response) {
+                if (response.success) {
+                    table.ajax.reload(null, false);
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            }).fail(function() {
+                alert('Error occurred while updating category status');
+            });
+        }
+    });
+});
+</script>

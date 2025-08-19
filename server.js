@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const logger = require('./config/logger');
 const apiRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
+const { getFieldError } = require('./helpers/errorHelper');
 const { Server } = require('http');
 
 // Initialize Express App
@@ -29,6 +30,7 @@ app.set('layout', './layouts/adminLayout'); // Default layout
 app.set("layout extractScripts", true); // <-- This is the key fix
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.locals.getFieldError = getFieldError;
 
 
 // Routes

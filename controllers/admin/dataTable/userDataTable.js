@@ -2,9 +2,7 @@ const User = require('../../../models/User');
 const logger = require('../../../config/logger');
 
 const getUsersDataTable = async (req, res) => {
-    logger.info('Fetching users for DataTable with column filters');
-    console.log('=== DataTable Request with Column Filters ===');
-    console.log('Query params:', req.query);
+
     
     try {
         // Get DataTables parameters

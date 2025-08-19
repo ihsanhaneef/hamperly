@@ -1,47 +1,29 @@
 <div class="page-header">
   <h1>Manage Users</h1>
-  <a href="/admin/users/create" class="create-btn">
+  <a href="/admin/users/create" class="primary-btn">
     <i class="fas fa-plus"></i> Add New User
   </a>
 </div>
 
 <!-- Individual Column Filters -->
 <div
-  class="column-filters-section"
-  style="
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  "
->
-  <h5 style="margin-bottom: 15px">Column Filters</h5>
+  class="column-filters-section">
+  <!-- <h5>Column Filters</h5> -->
 
   <!-- First Row: Name, Username, Email -->
   <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;" >
     <!-- Name Filter -->
     <div class="col-md-4 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label
-          for="nameFilter"
-          style="font-weight: 600; display: block; margin-bottom: 5px"
-          >Name:</label
-        >
-        <input
-          type="text"
-          id="nameFilter"
-          placeholder="Filter by name..."
-          class="form-control"
-          style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"
-        />
+        <label for="nameFilter" style="font-weight: 600; display: block; margin-bottom: 5px">Name:</label>
+        <input type="text" id="nameFilter" placeholder="Filter by name..." class="form-control" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"/>
       </div>
     </div>
 
     <!-- Username Filter -->
     <div class="col-md-4 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label
-          for="usernameFilter"
+        <label class="filer-label" for="usernameFilter"
           style="font-weight: 600; display: block; margin-bottom: 5px"
           >Username:</label
         >
@@ -97,22 +79,12 @@
   <!-- Control Buttons -->
   <div class="col-md-8 col-sm-6 col-12 mb-3 d-flex align-items-end">
     <div
-      class="filter-controls"
-      style="display: flex; gap: 10px; flex-wrap: wrap"
-    >
-      <button
-        id="clearAllFilters"
-        class="btn btn-secondary"
-        style="padding: 8px 16px"
-      >
-        <i class="fas fa-times"></i> Clear All Filters
+      class="filter-controls" style="display: flex; gap: 10px; flex-wrap: wrap">
+      <button id="clearAllFilters" class="btn btn-secondary" style="padding: 8px 16px">
+        Clear All Filters
       </button>
-      <button
-        id="applyFilters"
-        class="btn btn-primary"
-        style="padding: 8px 16px"
-      >
-        <i class="fas fa-filter"></i> Apply Filters
+      <button id="applyFilters" class="btn btn-primary" style="padding: 8px 16px">
+         Apply Filters
       </button>
     </div>
   </div>
@@ -152,13 +124,6 @@
           d.usernameFilter = $("#usernameFilter").val();
           d.emailFilter = $("#emailFilter").val();
           d.roleFilter = $("#roleFilter").val();
-
-          console.log("Column filters being sent:", {
-            nameFilter: d.nameFilter,
-            usernameFilter: d.usernameFilter,
-            emailFilter: d.emailFilter,
-            roleFilter: d.roleFilter,
-          });
         },
         error: function (xhr, error, thrown) {
           console.error("DataTable Ajax error:", error, thrown);

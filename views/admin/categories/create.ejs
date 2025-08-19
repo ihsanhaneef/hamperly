@@ -1,0 +1,134 @@
+<h1 class="page-header">Create  Category</h1>
+
+<div class="form-container">
+    <% if (errors.length > 0) { %>
+        <div class="alert-danger">
+            <ul>
+                <% errors.forEach(err => { %>
+                    <li><%= err.msg %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <form action="/admin/categories/create" method="POST" enctype="multipart/form-data">
+               
+    <div class="form-group">
+    <label for="image">Category Image</label>
+    <div class="file-input-wrapper">
+        <input type="file" id="image" name="image" accept="image/*" style="display: none;">
+        <button type="button" class="icon-upload-btn" onclick="document.getElementById('image').click()">
+            <i class="fas fa-camera"></i>
+        </button>
+    </div>
+    <% const imageError = getFieldError(errors, 'image'); %>
+    <% if (imageError) { %>
+        <span class="text-danger"><%= imageError %></span>
+    <% } %>
+    <small class="form-text text-muted">
+        Supported formats: JPG, JPEG, PNG, GIF. Max size: 5MB.
+    </small>
+    <div class="preview-container" id="imagePreview" style="display: none;">
+        <img id="preview" class="image-preview" alt="Preview">
+        <button type="button" class="remove-image-btn" onclick="removeImage()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+        
+        <div class="form-group">
+            <div class="form-group">
+    <label for="name">Category Name *</label>
+    <input type="text" class="form-control" id="name" name="name" 
+        value="<%= oldInput.name || '' %>" placeholder="Enter category name" maxlength="50">
+    <% const nameError = getFieldError(errors, 'name'); %>
+    <% if (nameError) { %>
+        <span class="text-danger"><%= nameError %></span>
+    <% } %>
+</div>
+
+<!-- For the image field -->
+
+
+<!-- For the description field -->
+<div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" style="width: 100%;" id="description" name="description" 
+        rows="3" placeholder="Enter category description" maxlength="500"><%= oldInput.description || '' %></textarea>
+    <% const descError = getFieldError(errors, 'description'); %>
+    <% if (descError) { %>
+        <span class="text-danger"><%= descError %></span>
+    <% } %>
+</div>
+
+<!-- For the isActive field -->
+<div class="form-group">
+    <label for="isActive">Status</label>
+    <select class="form-control" id="isActive" name="isActive">
+        <option value="true" <%= (oldInput.isActive === 'true' || oldInput.isActive === true || !oldInput.hasOwnProperty('isActive')) ? 'selected' : '' %>>Active</option>
+        <option value="false" <%= (oldInput.isActive === 'false' || oldInput.isActive === false) ? 'selected' : '' %>>Inactive</option>
+    </select>
+    <% const activeError = getFieldError(errors, 'isActive'); %>
+    <% if (activeError) { %>
+        <span class="text-danger"><%= activeError %></span>
+    <% } %>
+</div>
+
+        <button type="submit" class="btn-submit">Create Category</button>
+    </form>
+</div>
+
+
+
+<script>
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const preview = document.getElementById('preview');
+                preview.src = event.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    function removeImage() {
+        document.getElementById('image').value = '';
+        document.getElementById('preview').src = '';
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+</script>
+
+<%- contentFor('scripts') %>
+<script>
+$(document).ready(function() {
+    // Image preview functionality
+    $('#image').change(function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#preview').attr('src', e.target.result);
+                $('#imagePreview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#imagePreview').hide();
+        }
+    });
+
+    // Update file input label text
+    $('#image').change(function() {
+        const filename = $(this).val().split('\\').pop();
+        if (filename) {
+            $(this).siblings('label').html('<i class="fas fa-check"></i> ' + filename);
+        } else {
+            $(this).siblings('label').html('<i class="fas fa-upload"></i> Choose Image');
+        }
+    });
+});
+</script>

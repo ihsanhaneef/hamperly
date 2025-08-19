@@ -1,6 +1,11 @@
 <h1 class="page-header">User Details: <%= user.name %></h1>
 
+
 <div class="user-details-container">
+        <div class="action-buttons">
+        <a href="/admin/users/edit/<%= user._id %>" class="primary-btn">Edit User</a>
+        <a href="/admin/users" class="secondary-btn">Back to Users</a>
+    </div>
     <div class="user-info-card">
         <div class="user-info-row">
             <span class="info-label">Full Name:</span>
@@ -39,10 +44,7 @@
         </div>
     </div>
 
-    <div class="action-buttons">
-        <a href="/admin/users/edit/<%= user._id %>" class="btn-edit">Edit User</a>
-        <a href="/admin/users" class="btn-back">Back to Users</a>
-    </div>
+
 </div>
 
 <style>

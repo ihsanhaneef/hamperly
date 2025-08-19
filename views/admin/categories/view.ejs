@@ -1,0 +1,142 @@
+<h1 class="page-header">Category Details: <%= category.name %></h1>
+
+<div class="view-details-container">
+    <div class="view-info-card">
+            <div class="action-buttons">
+        <a href="/admin/categories/edit/<%= category._id %>" class="primary-btn">Edit Category</a>
+        <a href="/admin/categories" class="secondary-btn">Back to Categories</a>
+    </div>
+            
+        <div class="user-info-row">
+            <span class="view-info-label">Image:</span>
+            <span class="view-info-value">
+                <img src="<%= category.imagePath || '/uploads/categories/default-category.jpg' %>" 
+                     alt="<%= category.name %>" 
+                     class="category-image-thumb"
+                     onerror="this.src='/uploads/categories/default-category.jpg'">
+            </span>
+        </div>
+        <div class="user-info-row">
+            <span class="view-info-label">Category Name:</span>
+            <span class="view-info-value"><%= category.name %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="view-info-label">Description:</span>
+            <span class="view-info-value"><%= category.description || 'No description provided' %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="view-info-label">Status:</span>
+            <span class="view-info-value">
+                <span class="status-badge <%= category.isActive ? 'active' : 'inactive' %>">
+                    <%= category.isActive ? 'Active' : 'Inactive' %>
+                </span>
+            </span>
+        </div>
+
+        
+        <div class="user-info-row">
+            <span class="view-info-label">Created At:</span>
+            <span class="view-info-value"><%= new Date(category.createdAt).toLocaleString() %></span>
+        </div>
+        
+        <div class="user-info-row">
+            <span class="view-info-label">Last Updated:</span>
+            <span class="view-info-value"><%= new Date(category.updatedAt).toLocaleString() %></span>
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    .view-details-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .view-info-card {
+        margin-bottom: 30px;
+    }
+    
+    .user-info-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .view-info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .view-info-label {
+        font-weight: bold;
+        width: 200px;
+        color: #555;
+    }
+    
+    .view-info-value {
+        flex: 1;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-edit, .btn-back {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .btn-edit {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background-color: #45a049;
+    }
+    
+    .btn-back {
+        background-color: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-back:hover {
+        background-color: #e0e0e0;
+    }
+    
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+    
+    .status-badge.active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-badge.inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .category-image-thumb {
+        width: 80px;
+        height: 80px;
+        border-radius: 4px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+    }
+</style>

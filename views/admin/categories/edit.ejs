@@ -1,0 +1,130 @@
+<h1 class="page-header">Update Category</h1>
+
+<div class="form-container">
+    <% if (errors.length > 0) { %>
+        <div class="alert-danger">
+            <ul>
+                <% errors.forEach(err => { %>
+                    <li><%= err.msg %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <% if (success) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= success %>
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <% } %>
+
+    <form action="/admin/categories/update/<%= category._id %>" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">Upload New Image (Optional)</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="image" name="image" accept="image/*" style="display: none;">
+                <button type="button" class="icon-upload-btn" onclick="document.getElementById('image').click()">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            <% const imageError = getFieldError(errors, 'image'); %>
+            <% if (imageError) { %>
+                <span class="text-danger"><%= imageError %></span>
+            <% } %>
+            <small class="form-text text-muted">
+                Leave empty to keep current image. Supported formats: JPG, JPEG, PNG, GIF. Max size: 5MB.
+            </small>
+            <div class="preview-container" id="imagePreview" style="display: none;">
+                <img id="preview" class="image-preview" alt="Preview">
+                <button type="button" class="remove-image-btn" onclick="removeImage()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Current Image</label>
+            <div class="current-image">
+                <img src="<%= category.imagePath %>" alt="<%= category.name %>" 
+                     class="image-preview" style="max-width: 150px;">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name">Category Name *</label>
+            <input type="text" class="form-control" id="name" name="name" 
+                   value="<%= oldInput.name || category.name %>" 
+                   placeholder="Enter category name" maxlength="50">
+            <% const nameError = getFieldError(errors, 'name'); %>
+            <% if (nameError) { %>
+                <span class="text-danger"><%= nameError %></span>
+            <% } %>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" style="width: 100%;" id="description" name="description" 
+                      rows="3" placeholder="Enter category description" 
+                      maxlength="500"><%= oldInput.description || category.description || '' %></textarea>
+            <% const descError = getFieldError(errors, 'description'); %>
+            <% if (descError) { %>
+                <span class="text-danger"><%= descError %></span>
+            <% } %>
+        </div>
+
+        
+
+        
+
+        <div class="form-group">
+            <label for="isActive">Status</label>
+            <select class="form-control" id="isActive" name="isActive">
+                <option value="true" <%= ((oldInput.isActive !== undefined ? oldInput.isActive : category.isActive) === true || (oldInput.isActive !== undefined ? oldInput.isActive : category.isActive) === 'true') ? 'selected' : '' %>>Active</option>
+                <option value="false" <%= ((oldInput.isActive !== undefined ? oldInput.isActive : category.isActive) === false || (oldInput.isActive !== undefined ? oldInput.isActive : category.isActive) === 'false') ? 'selected' : '' %>>Inactive</option>
+            </select>
+            <% const activeError = getFieldError(errors, 'isActive'); %>
+            <% if (activeError) { %>
+                <span class="text-danger"><%= activeError %></span>
+            <% } %>
+        </div>
+
+        <button type="submit" class="btn-submit">Update Category</button>
+        <!-- <a href="/admin/categories" class="btn-cancel">Cancel</a> -->
+    </form>
+</div>
+
+<%- contentFor('scripts') %>
+<script>
+$(document).ready(function() {
+    // Image preview functionality
+    $('#image').change(function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#preview').attr('src', e.target.result);
+                $('#imagePreview').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#imagePreview').hide();
+        }
+    });
+
+    // Update file input label text
+    $('#image').change(function() {
+        const filename = $(this).val().split('\\').pop();
+        if (filename) {
+            $(this).siblings('label').html('<i class="fas fa-check"></i> ' + filename);
+        } else {
+            $(this).siblings('label').html('<i class="fas fa-upload"></i> Choose Image');
+        }
+    });
+});
+
+function removeImage() {
+    document.getElementById('image').value = '';
+    document.getElementById('preview').src = '';
+    document.getElementById('imagePreview').style.display = 'none';
+}
+</script>
