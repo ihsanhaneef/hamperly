@@ -4,6 +4,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const expressEjsLayouts = require('express-ejs-layouts');
 const path = require('path');
+const session = require('express-session');
+const flash = require('express-flash');
 
 const connectDB = require('./config/db');
 const logger = require('./config/logger');
@@ -23,6 +25,13 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+app.use(flash());
 
 // --- View Engine Setup (EJS) with Layouts ---
 app.use(expressEjsLayouts);

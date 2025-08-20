@@ -1,229 +1,229 @@
 <div class="page-header">
-  <h1>Manage Users</h1>
+  <h1>Users Management</h1>
   <a href="/admin/users/create" class="primary-btn">
     <i class="fas fa-plus"></i> Add New User
   </a>
 </div>
 
-<!-- Individual Column Filters -->
-<div
-  class="column-filters-section">
-  <!-- <h5>Column Filters</h5> -->
+<!-- Success/Error Messages -->
+<% if (locals.success) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= locals.success %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>
 
-  <!-- First Row: Name, Username, Email -->
-  <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;" >
+<% if (locals.error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= locals.error %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>
+
+<!-- Column Filters Section -->
+<div class="column-filters-section">
+  <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;">
     <!-- Name Filter -->
-    <div class="col-md-4 col-sm-6 col-12 mb-3">
+    <div class="col-md-3 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label for="nameFilter" style="font-weight: 600; display: block; margin-bottom: 5px">Name:</label>
-        <input type="text" id="nameFilter" placeholder="Filter by name..." class="form-control" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"/>
+        <label for="nameFilter">Name:</label>
+        <input type="text" id="nameFilter" placeholder="Filter by name..." class="form-control" />
       </div>
     </div>
 
     <!-- Username Filter -->
-    <div class="col-md-4 col-sm-6 col-12 mb-3">
+    <div class="col-md-3 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label class="filer-label" for="usernameFilter"
-          style="font-weight: 600; display: block; margin-bottom: 5px"
-          >Username:</label
-        >
-        <input
-          type="text"
-          id="usernameFilter"
-          placeholder="Filter by username..."
-          class="form-control"
-          style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"
-        />
+        <label for="usernameFilter">Username:</label>
+        <input type="text" id="usernameFilter" placeholder="Filter by username..." class="form-control" />
       </div>
     </div>
 
     <!-- Email Filter -->
-    <div class="col-md-4 col-sm-6 col-12 mb-3">
+    <div class="col-md-3 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label
-          for="emailFilter"
-          style="font-weight: 600; display: block; margin-bottom: 5px"
-          >Email:</label
-        >
-        <input
-          type="text"
-          id="emailFilter"
-          placeholder="Filter by email..."
-          class="form-control"
-          style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"
-        />
+        <label for="emailFilter">Email:</label>
+        <input type="text" id="emailFilter" placeholder="Filter by email..." class="form-control" />
       </div>
     </div>
 
     <!-- Role Filter -->
-    <div class="col-md-4 col-sm-6 col-12 mb-3">
+    <div class="col-md-3 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label
-          for="roleFilter"
-          style="font-weight: 600; display: block; margin-bottom: 5px"
-          >Role:</label
-        >
-        <select
-          id="roleFilter"
-          class=" col-md-4 col-sm-6 col-12 mb-3"
-          style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px"
-        >
+        <label for="roleFilter">Role:</label>
+        <select id="roleFilter" class="form-control">
           <option value="">All Roles</option>
           <option value="1">Admin</option>
-          <option value="0">User</option>
+          <option value="2">User</option>
         </select>
       </div>
     </div>
-  </div>
 
-  <!-- Control Buttons -->
-  <div class="col-md-8 col-sm-6 col-12 mb-3 d-flex align-items-end">
-    <div
-      class="filter-controls" style="display: flex; gap: 10px; flex-wrap: wrap">
-      <button id="clearAllFilters" class="btn btn-secondary" style="padding: 8px 16px">
-        Clear All Filters
-      </button>
-      <button id="applyFilters" class="btn btn-primary" style="padding: 8px 16px">
-         Apply Filters
-      </button>
-    </div>
-  </div>
 </div>
 
-<table id="usersTable" class="content-table display" style="width: 100%">
+    <!-- Control Buttons -->
+    <div class="col-md-6 col-sm-12 col-12 mb-3 d-flex align-items-end">
+      <div class="filter-controls">
+        <button id="clearAllFilters" class="btn btn-secondary">
+          Clear Filters
+        </button>
+        <button id="applyFilters" class="btn btn-primary">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  
+</div>
+
+<!-- Users Table -->
+<table id="usersTable" class="content-table display" style="width:100%">
   <thead>
-    <tr>
+  <tr>
+      <th>Index</th>
       <th>Name</th>
       <th>Username</th>
       <th>Email</th>
       <th>Role</th>
+      <!-- <th>Created</th> -->
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <!-- Server-side data will populate this -->
+    <!-- Data will be loaded via AJAX -->
   </tbody>
 </table>
 
+<%- contentFor('styles') %>
+<style>
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #007bff, #28a745);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.dataTable-image-text {
+  display: flex;
+  align-items: center;
+}
+
+.user-name-text {
+  flex: 1;
+}
+</style>
+
 <%- contentFor('scripts') %>
 <script>
-  console.log("Loading DataTable script with individual column filters...");
-  $(document).ready(function () {
-    console.log("DOM ready, initializing DataTable...");
-
-    // Initialize DataTable
-    var table = $("#usersTable").DataTable({
-      processing: true,
-      serverSide: true,
-      ajax: {
-        url: "/admin/api/users-datatable",
-        type: "GET",
-        data: function (d) {
-          // Add individual column filter parameters
-          d.nameFilter = $("#nameFilter").val();
-          d.usernameFilter = $("#usernameFilter").val();
-          d.emailFilter = $("#emailFilter").val();
-          d.roleFilter = $("#roleFilter").val();
+$(document).ready(function() {
+    var table = $('#usersTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/admin/api/users-datatable',
+            type: 'GET',
+            data: function(d) {
+                d.nameFilter = $('#nameFilter').val() || '';
+                d.usernameFilter = $('#usernameFilter').val() || '';
+                d.emailFilter = $('#emailFilter').val() || '';
+                d.roleFilter = $('#roleFilter').val() || '';
+                d.dateFrom = $('#dateFromFilter').val() || '';
+                d.dateTo = $('#dateToFilter').val() || '';
+                
+                console.log('Sending user filters:', {
+                    nameFilter: d.nameFilter,
+                    usernameFilter: d.usernameFilter,
+                    emailFilter: d.emailFilter,
+                    roleFilter: d.roleFilter,
+                    dateFrom: d.dateFrom,
+                    dateTo: d.dateTo
+                });
+            },
+            error: function(xhr, error, thrown) {
+                console.error('Users DataTable AJAX error:', error, thrown);
+                console.error('Response:', xhr.responseText);
+            }
         },
-        error: function (xhr, error, thrown) {
-          console.error("DataTable Ajax error:", error, thrown);
-          console.error("Response:", xhr.responseText);
-          alert("Error loading data: " + error);
-        },
-        beforeSend: function () {
-          console.log("Making AJAX request to:", "/admin/api/users-datatable");
-        },
-      },
-      columns: [
-        { data: 0, name: "name" },
-        { data: 1, name: "username" },
-        { data: 2, name: "email" },
-        { data: 3, name: "role" },
-        { data: 4, name: "actions", orderable: false, searchable: false },
-      ],
-      pageLength: 25,
-      lengthMenu: [
-        [10, 25, 50, 100],
-        [10, 25, 50, 100],
-      ],
-      order: [[0, "asc"]],
-      language: {
-        processing: "Loading users...",
-        emptyTable: "No users found",
-        info: "Showing _START_ to _END_ of _TOTAL_ users",
-        infoEmpty: "Showing 0 to 0 of 0 users",
-        infoFiltered: "(filtered from _MAX_ total users)",
-      },
-      dom: '<"top"lf>rt<"bottom"ip><"clear">',
+        columns: [
+            // Index column - uses DataTables built-in row index
+            {
+                data: null,
+                name: 'index',
+                orderable: false,
+                searchable: false,
+                width: '6%',
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            { data: 0, name: 'name', orderable: true, searchable: true, width: '20%' },
+            { data: 1, name: 'username', orderable: true, searchable: true, width: '15%' },
+            { data: 2, name: 'email', orderable: true, searchable: true, width: '20%' },
+            { data: 3, name: 'is_admin', orderable: true, searchable: false, width: '10%' },
+            { data: 4, name: 'actions', orderable: false, searchable: false, width: '10%' }
+        ],
+        order: [[1, 'asc']], // Sort by "Name" column by default
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        language: {
+            processing: "Loading users...",
+            emptyTable: "No users found",
+            zeroRecords: "No matching users found"
+        }
     });
 
-    console.log("DataTable initialized");
-
-    // Individual column filter events
-    $("#nameFilter").on("keyup", function () {
-      var value = this.value;
-      console.log("Name filter changed to:", value);
-      table.draw();
+    // Filter events with debounce for text inputs
+    $('#nameFilter, #usernameFilter, #emailFilter').on('keyup input', function() {
+        clearTimeout(window.filterTimeout);
+        window.filterTimeout = setTimeout(() => table.draw(), 500);
     });
 
-    $("#usernameFilter").on("keyup", function () {
-      var value = this.value;
-      console.log("Username filter changed to:", value);
-      table.draw();
-    });
-
-    $("#emailFilter").on("keyup", function () {
-      var value = this.value;
-      console.log("Email filter changed to:", value);
-      table.draw();
-    });
-
-    $("#roleFilter").on("change", function () {
-      var value = this.value;
-      console.log("Role filter changed to:", value);
-      table.draw();
-    });
-
-    // Apply filters button (optional - filters work automatically)
-    $("#applyFilters").on("click", function () {
-      console.log("Applying all filters manually");
-      table.draw();
-    });
-
-    // Clear all filters
-    $("#clearAllFilters").on("click", function () {
-      console.log("Clearing all column filters");
-      $("#nameFilter").val("");
-      $("#usernameFilter").val("");
-      $("#emailFilter").val("");
-      $("#roleFilter").val("");
-      table.search("").draw();
-    });
-
-    // Debug: Log when table draws
-    table.on("draw", function () {
-      console.log("Table redrawn with filters");
-    });
-
-    // Add debouncing for better performance
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // Apply debouncing to text inputs (300ms delay)
-    $("#nameFilter, #usernameFilter, #emailFilter").on(
-      "keyup",
-      debounce(function () {
+    $('#roleFilter, #dateFromFilter, #dateToFilter').on('change', function() {
         table.draw();
-      }, 300)
-    );
-  });
+    });
+
+    $('#applyFilters').on('click', function() {
+        table.draw();
+    });
+
+    $('#clearAllFilters').on('click', function() {
+        $('#nameFilter, #usernameFilter, #emailFilter, #dateFromFilter, #dateToFilter').val('');
+        $('#roleFilter').val('');
+        table.draw();
+    });
+
+    // Toggle role functionality
+    $(document).on('click', '.toggle-role', function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+        
+        if (confirm('Are you sure you want to change this user\'s role?')) {
+            $.post(`/admin/users/toggle-role/${userId}`, function(response) {
+                if (response.success) {
+                    table.ajax.reload(null, false);
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            }).fail(function() {
+                alert('Error occurred while updating user role');
+            });
+        }
+    });
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        $('.alert').fadeOut('slow');
+    }, 5000);
+});
 </script>
+

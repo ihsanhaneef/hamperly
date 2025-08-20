@@ -1,14 +1,31 @@
 <div class="page-header">
-  <h1>Categories</h1>
-  <a href="/admin/categories/create" class="primary-btn">
-    <i class="fas fa-plus"></i> Add New Category
+  <h1>Users</h1>
+  <a href="/admin/users/create" class="primary-btn">
+    <i class="fas fa-plus"></i> Add New User
   </a>
 </div>
 
+<% if (locals.success) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= locals.success %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>
+
+<% if (locals.error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= locals.error %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>
+
 <!-- Column Filters Section -->
 <div class="column-filters-section">
-  <!-- <h5>Column Filters</h5> -->
-  <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;" >
+  <div class="row" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 10px 0px;">
     <!-- Name Filter -->
     <div class="col-md-4 col-sm-6 col-12 mb-3">
       <div class="filter-column">
@@ -17,39 +34,56 @@
       </div>
     </div>
 
-    <!-- Status Filter -->
+    <!-- Username Filter -->
     <div class="col-md-4 col-sm-6 col-12 mb-3">
       <div class="filter-column">
-        <label for="statusFilter">Status:</label>
-        <select id="statusFilter" class="form-control">
-          <option value="">All Statuses</option>
-          <option value="1">Active</option>
-          <option value="0">Inactive</option>
-        </select>
+        <label for="usernameFilter" style="font-weight: 600; display: block; margin-bottom: 5px">Username:</label>
+        <input type="text" id="usernameFilter" placeholder="Filter by username..." class="form-control" />
       </div>
     </div>
- </div>
 
-    <!-- Control Buttons -->
-  <div class="col-md-8 col-sm-6 col-12 mb-3 d-flex align-items-end">
-      <div class="filter-controls">
-        <button id="clearAllFilters" class="btn btn-secondary">
-          </i> Clear Filters
-        </button>
-        <button id="applyFilters" class="btn btn-primary">
-           Apply Filters
-        </button>
+    <!-- Email Filter -->
+    <div class="col-md-4 col-sm-6 col-12 mb-3">
+      <div class="filter-column">
+        <label for="emailFilter" style="font-weight: 600; display: block; margin-bottom: 5px">Email:</label>
+        <input type="text" id="emailFilter" placeholder="Filter by email..." class="form-control" />
+      </div>
+    </div>
+
+    <!-- Role Filter -->
+    <div class="col-md-4 col-sm-6 col-12 mb-3">
+      <div class="filter-column">
+        <label for="roleFilter">Role:</label>
+        <select id="roleFilter" class="form-control">
+          <option value="">All Roles</option>
+          <option value="1">Admin</option>
+          <option value="2">User</option>
+        </select>
       </div>
     </div>
   </div>
 
-<!-- Categories Table -->
-<table id="categoriesTable" class="content-table display" style="width:100%">
+  <!-- Control Buttons -->
+  <div class="col-md-8 col-sm-6 col-12 mb-3 d-flex align-items-end">
+    <div class="filter-controls">
+      <button id="clearAllFilters" class="btn btn-secondary">
+        Clear Filters
+      </button>
+      <button id="applyFilters" class="btn btn-primary">
+        Apply Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Users Table -->
+<table id="usersTable" class="content-table display" style="width:100%">
   <thead>
     <tr>
       <th>Name</th>
-      <th>Status</th>
-      <!-- <th>created at</th> -->
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -61,58 +95,148 @@
 <%- contentFor('scripts') %>
 <script>
 $(document).ready(function() {
-    var table = $('#categoriesTable').DataTable({
+    // Custom alert close functionality
+    $('.alert .close').on('click', function() {
+        $(this).closest('.alert').fadeOut(300, function() {
+            $(this).remove();
+        });
+    });
+
+    var table = $('#usersTable').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
-            url: '/admin/api/categories-datatable',
+            url: '/admin/api/users-datatable',
             type: 'GET',
             data: function(d) {
-                d.nameFilter = $('#nameFilter').val();
-                d.statusFilter = $('#statusFilter').val();
+                // Ensure filters are properly sent
+                d.nameFilter = $('#nameFilter').val() || '';
+                d.usernameFilter = $('#usernameFilter').val() || '';
+                d.emailFilter = $('#emailFilter').val() || '';
+                d.roleFilter = $('#roleFilter').val() || '';
+                
+                // Add debugging
+                console.log('Sending filters:', {
+                    nameFilter: d.nameFilter,
+                    usernameFilter: d.usernameFilter,
+                    emailFilter: d.emailFilter,
+                    roleFilter: d.roleFilter
+                });
+                
+                // Fixed sorting debug
+                if (d.order && d.order.length > 0) {
+                    console.log('Sorting:', {
+                        column: d.order.column,
+                        dir: d.order.dir,
+                        fullOrder: d.order
+                    });
+                }
+            },
+            error: function(xhr, error, thrown) {
+                console.error('DataTable AJAX error:', error, thrown);
             }
         },
         columns: [
-            { data: 0, name: 'name', orderable: true },
-            { data: 1, name: 'isActive', orderable: true },
-            { data: 2, name: 'actions', orderable: false, searchable: false }
+            { 
+                data: 0, 
+                name: 'name', 
+                orderable: true,
+                searchable: true 
+            },
+            { 
+                data: 1, 
+                name: 'username', 
+                orderable: true,
+                searchable: true 
+            },
+            { 
+                data: 2, 
+                name: 'email', 
+                orderable: true,
+                searchable: true 
+            },
+            { 
+                data: 3, 
+                name: 'is_admin', 
+                orderable: true,
+                searchable: false 
+            },
+            { 
+                data: 4, 
+                name: 'actions', 
+                orderable: false, 
+                searchable: false 
+            }
         ],
         order: [[0, 'asc']],
         pageLength: 10,
-        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        lengthMenu: [[2, 10, 25, 50, 100], [2, 10, 25, 50, 100]],
         language: {
-            processing: "Loading categories...",
-            emptyTable: "No categories found",
-            zeroRecords: "No matching categories found"
+            processing: "Loading users...",
+            emptyTable: "No users found",
+            zeroRecords: "No matching users found"
         }
     });
 
-    // Apply filters when button is clicked or filters change
-    $('#applyFilters, #nameFilter, #statusFilter').on('click keyup change', function() {
+    // Filter event handling with proper trigger
+    $('#nameFilter').on('keyup input', function() {
+        clearTimeout(window.filterTimeout);
+        window.filterTimeout = setTimeout(function() {
+            console.log('Triggering table draw from nameFilter');
+            table.draw();
+        }, 500);
+    });
+
+    $('#usernameFilter').on('keyup input', function() {
+        clearTimeout(window.usernameFilterTimeout);
+        window.usernameFilterTimeout = setTimeout(function() {
+            console.log('Triggering table draw from usernameFilter');
+            table.draw();
+        }, 500);
+    });
+
+    $('#emailFilter').on('keyup input', function() {
+        clearTimeout(window.emailFilterTimeout);
+        window.emailFilterTimeout = setTimeout(function() {
+            console.log('Triggering table draw from emailFilter');
+            table.draw();
+        }, 500);
+    });
+
+    $('#roleFilter').on('change', function() {
+        console.log('Role filter changed to:', $(this).val());
+        table.draw();
+    });
+
+    $('#applyFilters').on('click', function() {
+        console.log('Apply filters clicked');
         table.draw();
     });
 
     // Clear all filters
     $('#clearAllFilters').on('click', function() {
+        console.log('Clearing all filters');
         $('#nameFilter').val('');
-        $('#statusFilter').val('');
+        $('#usernameFilter').val('');
+        $('#emailFilter').val('');
+        $('#roleFilter').val('');
         table.draw();
     });
 
-    // Toggle status functionality
-    $(document).on('click', '.toggle-status', function(e) {
+    // Toggle role functionality
+    $(document).on('click', '.toggle-role', function(e) {
         e.preventDefault();
-        const categoryId = $(this).data('id');
+        const userId = $(this).data('id');
         
-        if (confirm('Are you sure you want to toggle this category status?')) {
-            $.post(`/admin/categories/toggle/${categoryId}`, function(response) {
+        if (confirm('Are you sure you want to toggle this user role?')) {
+            $.post(`/admin/users/toggle-role/${userId}`, function(response) {
                 if (response.success) {
                     table.ajax.reload(null, false);
                 } else {
                     alert('Error: ' + response.message);
                 }
             }).fail(function() {
-                alert('Error occurred while updating category status');
+                alert('Error occurred while updating user role');
             });
         }
     });
